@@ -1,27 +1,36 @@
 function findBiggestWord(input) {
+  const regex = /^[^aeiou][aeiou]{1,2}?([^aeiou]{1,2}[aeiou]{1,2}){1,52}|^[aeiouw]{1,2}[^aeiou]{1,2}?([aeiou])|^[^aeiou][aeiouw][aeiouh]/;
+
+  const list = getListWords(input)
+    .filter((word) => word.length <= 46)
+    .filter((word) => word.match(regex));
+
+  const result = getWordsWithoutThreeOrMoreConsonants(list);
+    
+  return result[0];
+}
+
+function getListWords(input) {
   let words = [];
+
   for (let i = 0; i < input.length; i++) {
     for (let j = i + 2; j <= input.length; j++) {
-      words.push(input.slice(i, j))
+      words.push(input.slice(i, j));
     }
   }
 
-  words = [...new Set(words)];
+  const uniqueWords = [...new Set(words)];
 
-  words.sort((a, b) => b.length - a.length);
+  uniqueWords.sort((a, b) => b.length - a.length);
 
-  let regex1 = /^[^aeiou][aeiou]{1,2}?([^aeiou]{1,2}[aeiou]{1,2}){1,52}|^[aeiouw]{1,2}[^aeiou]{1,2}?([aeiou])|^[^aeiou][aeiouw][aeiouh]/;
+  return uniqueWords;
+}
 
-  let list1 = words
-    .filter((word) => word.length <= 46)
-    .filter((word) => word.match(regex1));
-
-  const regex2 = /^(?:(?![b-df-hj-np-tv-z]{3}).)*$/;
+function getWordsWithoutThreeOrMoreConsonants(list) {
+  const regex = /^(?:(?![b-df-hj-np-tv-z]{3}).)*$/;
   
-  const result = list1
-    .filter(str => regex2.test(str));
-    
-  return result[0];
+  return list
+    .filter(str => regex.test(str));
 }
 
 const input = "asdfzxascvdfnozebranetworkpoasoidfuizxdfzxascvdcvdcvdasdnznznzasdf";
